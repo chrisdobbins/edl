@@ -21,7 +21,12 @@ class usb_class():
         if self.device is None:
             self.log(2, "Couldn't detect the device. Is it connected ?")
             return False
-        self.device.set_configuration()
+        try:
+            cfg = self.device.get_active_configuration()
+        except usb.core.USBError:
+            cfg = None
+        if cfg is None:
+            self.device.set_configuration()
         self.configuration = self.device.get_active_configuration()
         self.log(2, self.configuration)
         for itf_num in [0]:
